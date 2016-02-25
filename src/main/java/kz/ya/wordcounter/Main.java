@@ -6,6 +6,7 @@ package kz.ya.wordcounter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.LinkedHashMap;
 
 /**
  *
@@ -25,7 +26,14 @@ public class Main {
         }
         
         try {
-            System.out.println(util.getWordCount(new File(filePath))); // выведем в консоль количество слов в файле
+            // получим количество вхождений каждого слова в тексте файла
+            LinkedHashMap<String, Integer> result = util.getWordCount(new File(filePath));
+            
+            // приведем результат в читабельный формат
+            StringBuilder output = util.format(result);
+            
+            // вывод результата
+            System.out.print(output);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }

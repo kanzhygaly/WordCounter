@@ -1,11 +1,14 @@
 package kz.ya.wordcounter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +30,7 @@ public class UtilTest {
     public TemporaryFolder tempFolder = new TemporaryFolder();
     
     private Util utilInstance;
-    
+
     @Before
     public void setUp() {
         utilInstance = new Util();
@@ -66,16 +69,40 @@ public class UtilTest {
         System.out.println("getWordCount");
         
         File file = tempFolder.newFile("temp.txt");
-        List<String> lines = Arrays.asList("as opposed to using 'Content here, content here', making it look like",
-                "readable English. Many desktop publishing packages and web page");
+        List<String> lines = Arrays.asList("using 'Content here, content here',", "making it look like");
         Files.write(file.toPath(), lines, Charset.forName("UTF-8"));
         
-        int expResult = 21;
-        int result = utilInstance.getWordCount(file);
-        assertEquals(expResult, result);
+        LinkedHashMap<String, Integer> expResult = new LinkedHashMap<>();
+        expResult.put("using", 1);
+        expResult.put("content", 2);
+        expResult.put("here", 2);
+        expResult.put("making", 1);
+        expResult.put("it", 1);
+        expResult.put("look", 1);
+        expResult.put("like", 1);
+        
+        LinkedHashMap<String, Integer> result = utilInstance.getWordCount(file);
+        assertEquals(expResult.size(), result.size());
+        assertTrue(expResult.equals(result));
         
         file = new File("fakePath");
         thrown.expect(FileNotFoundException.class); // test for exception
         utilInstance.getWordCount(file);
+    }
+
+    /**
+     * Test of print method, of class Util.
+     */
+    @Test
+    public void testPrint() {
+        System.out.println("print");
+        
+        LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+        map.put("using", 1);
+        map.put("content", 2);
+        
+        String expResult = "using: 1\ncontent: 2\n";
+        StringBuilder result = utilInstance.format(map);
+        assertEquals(expResult, result.toString());
     }
 }
