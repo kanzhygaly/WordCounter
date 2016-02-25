@@ -5,7 +5,6 @@ package kz.ya.wordcounter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
